@@ -4,6 +4,8 @@ import { QdrantVectorStore } from "@langchain/qdrant";
 import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import "dotenv/config";
 
+console.log("Vector Store Service started");
+
 export async function getVectorStore(existing = false) {
   const embeddings = new GoogleGenerativeAIEmbeddings({
     model: "models/embedding-001",
