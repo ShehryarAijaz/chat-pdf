@@ -1,4 +1,4 @@
-import { upload } from "../middlewares/multer.middleware.js";
+import { queue } from "../middlewares/bullmq.middleware.js";
 
 const uploadFileController = async (req, res) => {
     try {
@@ -10,6 +10,10 @@ const uploadFileController = async (req, res) => {
                 success: false,
             })
         }
+        await queue.add('process-pdf', JSON.stringify({
+            fileName: req.file.originalname,
+            filePath: fileLocalPath,
+        }));
         return res.status(200).json({
             message: 'File uploaded successfully',
             success: true,

@@ -1,5 +1,6 @@
 import express from 'express'
 import cors from 'cors'
+import { queue } from './middlewares/bullmq.middleware.js'
 
 const app = express()
 app.use(cors({
