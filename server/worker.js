@@ -1,8 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 import { Worker } from "bullmq";
-import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
-import { QdrantVectorStore } from "@langchain/qdrant";
+import { getVectorStore } from "./services/vectorStore.js";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { CharacterTextSplitter } from "@langchain/textsplitters";
 
@@ -27,10 +26,7 @@ const worker = new Worker(
     const chunks = await textSplitter.splitDocuments(docs);
     console.log("Chunks created:", chunks);
 
-    const embeddings = new GoogleGenerativeAIEmbeddings({
-      model: "models/embedding-001",
-      apiKey: process.env.GEMINI_API_KEY,
-    });
+    const { embeddings } = await getVectorStore();
 
     const vectorStore = await QdrantVectorStore.fromDocuments(chunks, embeddings, {
       url: process.env.QDRANT_URL || "http://localhost:6333",
@@ -46,3 +42,5 @@ const worker = new Worker(
     },
   }
 );
+
+export { worker };
